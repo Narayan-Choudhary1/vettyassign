@@ -186,3 +186,21 @@ WHERE transaction_rank = 2;
 --Output:
 -- '3','2020-09-01 23:59:47','d3','2'
 
+-- Q8: How will you find the second transaction time per buyer (don't use min/max)?
+-- Approach: The prompt specifically asks not to use Min/Max. The most efficient standard SQL method is Window Functions.
+-- We partition by buyer, order by time, and select the 2nd row.
+SELECT 
+    buyer_id,
+    purchase_time as second_transaction_time
+FROM (
+    SELECT 
+        buyer_id,
+        purchase_time,
+        ROW_NUMBER() OVER (PARTITION BY buyer_id ORDER BY purchase_time ASC) as rn
+    FROM transactions
+) t
+WHERE rn = 2;
+
+--Output:
+-- '3','2020-09-01 23:59:47'
+
