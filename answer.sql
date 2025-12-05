@@ -91,3 +91,27 @@ GROUP BY store_id;
 --Output:
 -- 'g','5205'
 -- 'a','1440'
+
+
+-- Q4: What is the gross_transaction_value of every store's first order?
+-- Approach: Use ROW_NUMBER() partitioned by store_id to order transactions chronologically. Select Rank 1.
+WITH StoreOrders AS (
+    SELECT 
+        store_id,
+        gross_transaction_value,
+        ROW_NUMBER() OVER (PARTITION BY store_id ORDER BY purchase_time ASC) as rn
+    FROM transactions
+)
+SELECT store_id, gross_transaction_value
+FROM StoreOrders
+WHERE rn = 1;
+
+--Output:
+-- 'a','58.00'
+-- 'b','475.00'
+-- 'd','250.00'
+-- 'e','24.00'
+-- 'f','91.00'
+-- 'g','61.00'
+
+
