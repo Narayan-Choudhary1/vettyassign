@@ -135,3 +135,35 @@ LIMIT 1;
 --Output:
 -- denim pants
 
+-- Q6: Create a flag in the transaction items table indicating whether the refund can be processed or not.
+-- Condition: Refund must happen within 72 hours of Purchase time.
+-- Approach: Use a CASE statement checking if refund exists AND the hour difference is < 72.
+SELECT 
+    buyer_id,
+    item_id,
+    purchase_time,
+    refund_time,
+    CASE 
+        WHEN refund_time IS NOT NULL AND TIMESTAMPDIFF(HOUR, purchase_time, refund_time) < 72 
+        THEN 'Process Refund'
+        ELSE 'Do Not Process' 
+    END AS refund_process_flag
+FROM transactions;
+
+--Ouput:
+-- '3','a1','2019-09-19 21:19:07',NULL,'Do Not Process'
+-- '12','b4','2019-12-10 20:10:14',NULL,'Do Not Process'
+-- '3','d3','2020-09-01 23:59:47',NULL,'Do Not Process'
+-- '2','d2','2020-04-30 21:19:07',NULL,'Do Not Process'
+-- '1','f1','2020-10-22 22:20:07',NULL,'Do Not Process'
+-- '8','e7','2020-04-16 21:10:22',NULL,'Do Not Process'
+-- '5','g1','2019-09-23 12:09:36','2019-09-27 02:55:02','Do Not Process'
+-- '100','a1','2020-01-10 10:00:00','2020-01-11 10:00:00','Process Refund'
+-- '101','a1','2020-10-01 10:00:00',NULL,'Do Not Process'
+-- '102','a2','2020-10-02 11:00:00',NULL,'Do Not Process'
+-- '103','a1','2020-10-03 12:00:00',NULL,'Do Not Process'
+-- '104','a2','2020-10-04 13:00:00',NULL,'Do Not Process'
+-- '105','a1','2020-10-05 14:00:00',NULL,'Do Not Process'
+
+
+
