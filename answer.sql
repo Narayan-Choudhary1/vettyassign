@@ -42,3 +42,23 @@ INSERT INTO transactions (buyer_id, purchase_time, refund_time, store_id, item_i
 (103, '2020-10-03 12:00:00', NULL, 'a', 'a1', 58.00),
 (104, '2020-10-04 13:00:00', NULL, 'a', 'a2', 25.00),
 (105, '2020-10-05 14:00:00', NULL, 'a', 'a1', 58.00);
+
+
+-- Q1: What is the count of purchases per month (excluding refunded purchases)?
+-- Approach: Filter out rows where refund_time exists, then group by the formatted Year-Month of the purchase_time.
+SELECT 
+    EXTRACT(YEAR FROM purchase_time) AS purchase_year,
+    EXTRACT(MONTH FROM purchase_time) AS purchase_month,
+    COUNT(*) AS purchase_count
+FROM transactions
+WHERE refund_time IS NULL
+GROUP BY 1, 2
+ORDER BY 1, 2;
+
+--Output:
+-- '2019','9','1'
+-- '2019','12','1'
+-- '2020','4','2'
+-- '2020','9','1'
+-- '2020','10','6'
+
