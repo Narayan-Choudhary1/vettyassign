@@ -77,3 +77,17 @@ FROM (
 
 --Output:
 --1
+
+-- Q3: For each store, what is the shortest interval (in min) from purchase to refund time?
+-- Approach: Calculate the difference between refund and purchase time in minutes. Find the MIN value per store.
+-- Note: Logic assumes we only look at transactions that actually had a refund (refund_time is not null).
+SELECT 
+    store_id,
+    MIN(TIMESTAMPDIFF(MINUTE, purchase_time, refund_time)) AS shortest_refund_interval_min
+FROM transactions
+WHERE refund_time IS NOT NULL
+GROUP BY store_id;
+
+--Output:
+-- 'g','5205'
+-- 'a','1440'
