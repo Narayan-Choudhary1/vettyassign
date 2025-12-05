@@ -62,3 +62,18 @@ ORDER BY 1, 2;
 -- '2020','9','1'
 -- '2020','10','6'
 
+-- Q2: How many stores receive at least 5 orders/transactions in October 2020?
+-- Approach: Filter transactions specifically for Oct 2020. Group by store_id and count transactions.
+-- Then, use a subquery or HAVING clause to filter groups >= 5 and count the resulting stores.
+SELECT COUNT(*) AS number_of_stores
+FROM (
+    SELECT store_id
+    FROM transactions
+    WHERE purchase_time >= '2020-10-01 00:00:00' 
+      AND purchase_time <= '2020-10-31 23:59:59'
+    GROUP BY store_id
+    HAVING COUNT(*) >= 5
+) AS qualifying_stores;
+
+--Output:
+--1
