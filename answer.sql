@@ -115,3 +115,23 @@ WHERE rn = 1;
 -- 'g','61.00'
 
 
+-- Q5: What is the most popular item name that buyers order on their first purchase?
+-- Approach: Rank transactions by buyer to find their first purchase. Join with items table to get names.
+-- Count occurrences of names for these first purchases and order descending.
+WITH BuyerFirstPurchases AS (
+    SELECT 
+        t.item_id,
+        ROW_NUMBER() OVER (PARTITION BY t.buyer_id ORDER BY t.purchase_time ASC) as rn
+    FROM transactions t
+)
+SELECT i.item_name
+FROM BuyerFirstPurchases bfp
+JOIN items i ON bfp.item_id = i.item_id
+WHERE bfp.rn = 1
+GROUP BY i.item_name
+ORDER BY COUNT(*) DESC
+LIMIT 1;
+
+--Output:
+-- denim pants
+
