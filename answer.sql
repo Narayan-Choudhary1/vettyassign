@@ -166,4 +166,23 @@ FROM transactions;
 -- '105','a1','2020-10-05 14:00:00',NULL,'Do Not Process'
 
 
+-- Q7: Create a rank by buyer_id column in the transaction items table and filter for only the second purchase per buyer.
+-- (Ignore refunds here)
+-- Approach: Filter for non-refunded items first (as per question "Ignore refunds here").
+-- Use RANK() or ROW_NUMBER() partitioned by buyer_id. Filter where rank = 2.
+WITH RankedTransactions AS (
+    SELECT 
+        buyer_id,
+        purchase_time,
+        item_id,
+        RANK() OVER (PARTITION BY buyer_id ORDER BY purchase_time ASC) as transaction_rank
+    FROM transactions
+    WHERE refund_time IS NULL -- Assuming "Ignore refunds" means exclude refunded transactions
+)
+SELECT *
+FROM RankedTransactions
+WHERE transaction_rank = 2;
+
+--Output:
+-- '3','2020-09-01 23:59:47','d3','2'
 
